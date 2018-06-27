@@ -9,6 +9,31 @@ public class SpawnManager : MonoBehaviour {
     public bool isSpawned = false;
     public int numberOfShots;
     public int spawnedEnemies = 0;
+    //Enemy Speed
+    float[,] levelSpeedInput = new float[10, 1] 
+    { {0.5f},
+      {0.5f},
+      {0.5f},
+      {1.0f},
+      {1.0f},
+      {1.2f},
+      {1.5f},
+      {1.7f},
+      {2.0f},
+      {2.5f},};
+    //poopTimes, numOfEnemies, numOfShots
+    int[,] levelGeneralInput = new int[10, 3]
+    { {1, 1, 7},
+      {1, 2, 7},
+      {2, 2, 8},
+      {2, 2, 8},
+      {2, 3, 8},
+      {2, 3, 8},
+      {2, 3, 8},
+      {3, 3, 8},
+      {3, 4, 8},
+      {3, 5, 8},};
+
 
 
     //int enemyIndex = 0;
@@ -45,44 +70,53 @@ public class SpawnManager : MonoBehaviour {
         if (y == 0)
         //Speed, poopTimes, numOfEnemies, numOfShots
         {
-            SetLevel(0.5f, 1, 1, 7);
-            
+            //SetLevel(0.5f, 1, 1, 7);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 1)
         {
-            SetLevel(0.5f, 1, 2, 7);
+            //SetLevel(0.5f, 1, 2, 7);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 2)
         {
-            SetLevel(0.5f, 2, 2, 8);
+            //SetLevel(0.5f, 2, 2, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 3)
         {
-            SetLevel(1f, 2, 2, 8);
+            //SetLevel(1f, 2, 2, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 4)
         {
-            SetLevel(1f, 2, 3, 8);
+            //SetLevel(1f, 2, 3, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 5)
         {
-            SetLevel(1.2f, 2, 3, 8);
+            //SetLevel(1.2f, 2, 3, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 6)
         {
-            SetLevel(1.5f, 2, 3, 8);
+            //SetLevel(1.5f, 2, 3, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 7)
         {
-            SetLevel(1.7f, 3, 3, 8);
+            //SetLevel(1.7f, 3, 3, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 8)
         {
-            SetLevel(2f, 3, 4, 8);
+            //SetLevel(2f, 3, 4, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else if (y == 9)
         {
-            SetLevel(2.5f, 3, 5, 8);
+            //SetLevel(2.5f, 3, 5, 8);
+            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
         }
         else
         {
@@ -152,7 +186,24 @@ public class SpawnManager : MonoBehaviour {
         return numberOfShots;
     }
 
+    public float getLevelSpeed (int level)
+    {
+        return levelSpeedInput[level, 0];
+    }
 
+    public int getLevelPoopTimes (int level)
+    {
+        return levelGeneralInput[level, 0];
+    }
 
+    public int getLevelEnemies(int level)
+    {
+        return levelGeneralInput[level, 1];
+    }
+
+    public int getLevelShots(int level)
+    {
+        return levelGeneralInput[level, 2];
+    }
 
 }

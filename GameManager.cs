@@ -9,7 +9,10 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverScreen;
     public GameObject player;
     public Text timerText;
-    
+    public Text LevelNumberScreen;
+    public Text EnemiesNumberScreen;
+    public Text BulletNumberScreen;
+
     public int enemiesDead = 0;
     public int bulletsDestroyed = 0;
     
@@ -50,6 +53,12 @@ public class GameManager : MonoBehaviour
         if (enemiesDead == FindObjectOfType<SpawnManager>().numberOfEnemies)
         {
             //Level Complete Screen
+            sceneIndex++;
+
+            LevelNumberScreen.text = sceneIndex.ToString();
+            EnemiesNumberScreen.text = FindObjectOfType<SpawnManager>().getLevelEnemies(sceneIndex).ToString();
+            BulletNumberScreen.text = FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex).ToString();
+
             levelCompleteScreen.SetActive(true);
             DestroyAllObjects();
             player.SetActive(false);
@@ -73,7 +82,6 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<SpawnManager>().spawnedEnemies = 0;
         FindObjectOfType<SpawnManager>().isSpawned = false;
 
-        sceneIndex++;
         FindObjectOfType<SpawnManager>().CheckScene(sceneIndex);
 
         mTimer = 60;
@@ -146,6 +154,8 @@ public class GameManager : MonoBehaviour
 
         timerText.text = mTimer.ToString();
     }
+
+
 
     
     
