@@ -126,7 +126,6 @@ public class EnemyBehavior1 : MonoBehaviour {
         if (collision.tag == "Bullet")
         {
             //Enemy1 Death animation
-            FindObjectOfType<GameManager>().bulletsDestroyed++;
             FindObjectOfType<GameManager>().CheckEndOfLevel();
             Destroy(this.gameObject);
         }

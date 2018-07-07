@@ -203,6 +203,7 @@ public class SpawnManager : MonoBehaviour {
 
     public int getLevelShots(int level)
     {
+        numberOfShots = levelGeneralInput[level, 2];
         return levelGeneralInput[level, 2];
     }
 

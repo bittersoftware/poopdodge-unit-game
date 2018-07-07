@@ -8,6 +8,9 @@ public class Player : MonoBehaviour {
 
     public GameObject bulletEmitter;
     public GameObject Bullet;
+    public GameObject farBackground;
+    public GameObject midBackground;
+    public GameObject closeBackground;
 
     public float bulletPower = 1;
     public float bulletAngle;
@@ -16,11 +19,13 @@ public class Player : MonoBehaviour {
     private float moveSpeed = 5.0f;
     [SerializeField]
     int numberOfShots;
-    private float screenLimitLeft = -3.5f;
-    private float screenLimitRight = +3.5f;
+    private float screenLimitLeft = -2.9f;
+    private float screenLimitRight = +2.9f;
     [SerializeField]
     private float _fireRate = 0.7f;
     private float _canFire = 0.0f;
+    private Animator playerAnimator;
+    private bool isLookingLeft = false;
 
 
 
@@ -33,6 +38,7 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody2D>();
+        playerAnimator = GetComponent<Animator>();
         this.gameObject.SetActive(true);
         numberOfShots = FindObjectOfType<SpawnManager>().GetNumberOfShots();
 
@@ -47,6 +53,42 @@ public class Player : MonoBehaviour {
         directionX = CrossPlatformInputManager.GetAxis("Horizontal");
         rb.velocity = new Vector2(directionX * moveSpeed, 0);
 
+        if (directionX > 0)
+        {
+            if (isLookingLeft == true)
+            {
+                flipPlayer();
+            }
+            playerAnimator.SetBool("walk", true);
+            //Parallax Effect Left
+            if (transform.position.x < screenLimitRight)
+            {
+                closeBackground.transform.Translate(Vector2.left * 0.4f * Time.deltaTime);
+                midBackground.transform.Translate(Vector2.left * 0.2f * Time.deltaTime);
+                farBackground.transform.Translate(Vector2.left * 0.1f * Time.deltaTime);
+            }
+        }
+        else if (directionX < 0)
+        {
+            if (isLookingLeft == false)
+            {
+                flipPlayer();
+            }
+            playerAnimator.SetBool("walk", true);
+            //Parallax Effect right
+            if (transform.position.x > screenLimitLeft)
+            {
+                closeBackground.transform.Translate(Vector2.right * 0.4f * Time.deltaTime);
+                midBackground.transform.Translate(Vector2.right * 0.2f * Time.deltaTime);
+                farBackground.transform.Translate(Vector2.right * 0.1f * Time.deltaTime);
+            }
+        }
+        else if (directionX == 0)
+        {
+            playerAnimator.SetBool("walk", false);
+        }
+
+
         if (transform.position.x < screenLimitLeft)
         {
             transform.position = new Vector2 (screenLimitLeft, transform.position.y);
@@ -56,6 +98,34 @@ public class Player : MonoBehaviour {
             transform.position = new Vector2 (screenLimitRight, transform.position.y);
         }
 	}
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Poop")
+        {
+            this.gameObject.SetActive(false);
+            //Restart the game
+            FindObjectOfType<GameManager>().GameOver();
+
+
+        }
+        else if (collision.tag == "Bullet")
+        {
+
+            this.gameObject.SetActive(false);
+            //Restart the game
+            FindObjectOfType<GameManager>().GameOver();
+
+
+        }
+    }
+
+
+    private void flipPlayer()
+    {
+        isLookingLeft = !isLookingLeft;
+        transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+    }
 
     public void Shoot()
     {
@@ -87,26 +157,7 @@ public class Player : MonoBehaviour {
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Poop")
-        {
-            this.gameObject.SetActive(false);
-            //Restart the game
-            FindObjectOfType<GameManager>().GameOver();
 
-
-        }
-        else if (collision.tag == "Bullet")
-        {
-
-            this.gameObject.SetActive(false);
-            //Restart the game
-            FindObjectOfType<GameManager>().GameOver();
-            
-
-        }
-    }
 
 
     public void setNumberOfShots(int _numberOfShots)
