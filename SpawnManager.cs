@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour {
 
     public int numberOfEnemies;
     public bool isSpawned = false;
-    public int numberOfShots;
+    public int numberOfShots = 7;
     public int spawnedEnemies = 0;
     //Enemy Speed
     float[,] levelSpeedInput = new float[10, 1] 
@@ -146,7 +146,7 @@ public class SpawnManager : MonoBehaviour {
     private void SpawnEnemy()
     {
  
-        float ySpawn = Random.Range (0f, 4.3f);
+        float ySpawn = Random.Range (0f, 3.8f);
 
         GameObject enemy = Instantiate(enemy1Prefab, new Vector2(4, ySpawn), Quaternion.identity) as GameObject;
 
@@ -168,9 +168,9 @@ public class SpawnManager : MonoBehaviour {
             return;
         }
         CancelInvoke("SpawnEnemy");
-        Debug.Log("CancelInvoke");
-        Debug.Log("num of Enemies: " + numberOfEnemies);
-        Debug.Log("spawned Enemies: " + spawnedEnemies);
+        //Debug.Log("CancelInvoke");
+        //Debug.Log("num of Enemies: " + numberOfEnemies);
+        //Debug.Log("spawned Enemies: " + spawnedEnemies);
 
         isSpawned = true;
 

@@ -12,5 +12,9 @@ public class PoopController : MonoBehaviour {
         {
             Destroy(this.gameObject);
         }
+        else if (collision.tag == "Player")
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletEmissor : MonoBehaviour {
+
     private Player player;
 
     public float angle = 0;
@@ -19,14 +20,17 @@ public class BulletEmissor : MonoBehaviour {
     {
         selfAnchor = GetComponent<Transform>();
         player = GameObject.Find("Player").GetComponent<Player>();
+
     }
 
     //Update the UI elements rotation
     void Update()
     {
         
-        selfAnchor.rotation = Quaternion.Euler(0, 0, 90+angle);
+        selfAnchor.rotation = Quaternion.Euler(0, 0, angle);
         player.bulletAngle = angle;
+
+
     }
 
     public void DecreaseAngle()

@@ -14,7 +14,8 @@ public class Player : MonoBehaviour {
 
     public float bulletPower = 1;
     public float bulletAngle;
-
+    [SerializeField]
+    private GameObject playerArm;
     [Range (1f, 10f)][SerializeField]
     private float moveSpeed = 5.0f;
     [SerializeField]
@@ -41,6 +42,9 @@ public class Player : MonoBehaviour {
         playerAnimator = GetComponent<Animator>();
         this.gameObject.SetActive(true);
         numberOfShots = FindObjectOfType<SpawnManager>().GetNumberOfShots();
+        playerAnimator.SetBool("dead", false);
+        playerAnimator.SetBool("timeout", false);
+        //playerArm = GameObject.Find("PlayerArm").GetComponent<GameObject>();
 
         // groundRef = GameObject.Find("GroundRef").GetComponent<GroundRef>();
 
@@ -97,27 +101,26 @@ public class Player : MonoBehaviour {
         {
             transform.position = new Vector2 (screenLimitRight, transform.position.y);
         }
-	}
+
+        //rotate player arm
+        playerArm.transform.rotation =  Quaternion.Euler(0, 0, bulletAngle);
+
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Poop")
         {
-            this.gameObject.SetActive(false);
-            //Restart the game
-            FindObjectOfType<GameManager>().GameOver();
-
-
+            playerAnimator.SetBool("dead", true);
+            Invoke("gameOver", 1.5f);
         }
-        else if (collision.tag == "Bullet")
-        {
+    }
 
-            this.gameObject.SetActive(false);
-            //Restart the game
-            FindObjectOfType<GameManager>().GameOver();
-
-
-        }
+    private void gameOver()
+    {
+        this.gameObject.SetActive(false);
+        //Restart the game
+        FindObjectOfType<GameManager>().GameOver();
     }
 
 
@@ -125,6 +128,7 @@ public class Player : MonoBehaviour {
     {
         isLookingLeft = !isLookingLeft;
         transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+
     }
 
     public void Shoot()
@@ -138,16 +142,33 @@ public class Player : MonoBehaviour {
                 return;
             }
 
+            FindObjectOfType<GameManager>().IncrementTotalShots();
             numberOfShots--;
+            playerAnimator.SetBool("shoot", true);
+            playerArm.GetComponent<Renderer>().enabled = true;
+            Invoke("ShootAnim", 0.25f);
 
-            //GameObject temporaryBulletHandler;
-            Instantiate(Bullet, bulletEmitter.transform.position, Quaternion.Euler(0, 0, bulletAngle));
 
-            _canFire = Time.time + _fireRate;
-        }
+        }  
+    }
+
+    public void timeoutAnim()
+    {
+        playerAnimator.SetBool("timeout", true);
+        Invoke("gameOver", 1.5f);
+    }
+
+    private void ShootAnim()
+    {
         
 
+        //GameObject temporaryBulletHandler;
+        Instantiate(Bullet, bulletEmitter.transform.position, Quaternion.Euler(0, 0, bulletAngle));
 
+        playerAnimator.SetBool("shoot", false);
+        playerArm.GetComponent<Renderer>().enabled = false;
+
+        _canFire = Time.time + _fireRate;
     }
 
     public void AdjustBulletPower(float newBulletPower)
