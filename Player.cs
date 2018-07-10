@@ -112,6 +112,7 @@ public class Player : MonoBehaviour {
         if (collision.tag == "Poop")
         {
             playerAnimator.SetBool("dead", true);
+            FindObjectOfType<AudioManager>().Play("PlayerDeath");
             Invoke("gameOver", 1.5f);
         }
     }

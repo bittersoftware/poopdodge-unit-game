@@ -14,6 +14,10 @@ public class PauseMenuHolder : MonoBehaviour {
     public Text CurrentLevel;
     public Text CurrentAcc;
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
 
 
     public void PauseGame()

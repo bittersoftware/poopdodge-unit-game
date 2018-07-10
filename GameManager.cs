@@ -13,9 +13,6 @@ public class GameManager : MonoBehaviour
     public Text LevelNumberScreen;
     public Text EnemiesNumberScreen;
     public Text BulletNumberScreen;
-    public AudioClip audioClip;
-    public AudioSource audioSource;
-
     public int enemiesDead = 0;
     public int bulletsDestroyed = 0;
 
@@ -35,7 +32,9 @@ public class GameManager : MonoBehaviour
     private int mTimer = 60;
     private int numberOfEnemies;
     private int numbOfLevelShots;
-    //private int LastLevelIndex = 1;
+    private bool isTimeoutFXPlayed;
+    private bool rewardTime;
+    private bool rewardBullet;
 
     // Use this for initialization
     void Start () {
@@ -43,8 +42,14 @@ public class GameManager : MonoBehaviour
         currentLevel = sceneIndex + 1;
         currentAcc = 0f;
         totalShots = 0;
+        isTimeoutFXPlayed = false;
 
-        audioSource.clip = audioClip;
+        //For rewards
+        rewardTime = false;
+        rewardBullet = false;
+
+    FindObjectOfType<AudioManager>().Play("Theme");
+
 
         FindObjectOfType<SpawnManager>().spawnedEnemies = 0;
         FindObjectOfType<SpawnManager>().isSpawned = false;
@@ -55,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1;
 
-        InvokeRepeating("TimerCountdown", 0.5f, 1f);
+        InvokeRepeating("TimerCountdown", 1f, 1f);
 
     }
 	
@@ -82,16 +87,30 @@ public class GameManager : MonoBehaviour
 
         if (enemiesDead == FindObjectOfType<SpawnManager>().numberOfEnemies)
         {
+            //AudioFX - Timeout Management
+            FindObjectOfType<AudioManager>().Stop("Timeout");
+            isTimeoutFXPlayed = false;
+
+            //reset Reward
+            //For rewards
+            rewardTime = false;
+            rewardBullet = false;
+
             //Level Complete Screen
             sceneIndex++;
             currentLevel++;
 
 
             LevelNumberScreen.text = sceneIndex.ToString();
-            EnemiesNumberScreen.text = FindObjectOfType<SpawnManager>().getLevelEnemies(sceneIndex).ToString();
-            BulletNumberScreen.text = FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex).ToString();
+            EnemiesNumberScreen.text = "x" + FindObjectOfType<SpawnManager>().getLevelEnemies(sceneIndex).ToString();
+            BulletNumberScreen.text = "x" + FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex).ToString();
+            BulletNumberScreen.color = new Color(0f / 255.0f, 0f / 255.0f, 0f / 255.0f, 255.0f / 255.0f);
 
             levelCompleteScreen.SetActive(true);
+
+            //Re-enalbe reward buttons
+            FindObjectOfType<NextLevel>().EnableRewardButtons();
+
             DestroyAllObjects();
             player.SetActive(false);
 
@@ -111,6 +130,8 @@ public class GameManager : MonoBehaviour
         GameObject.Find("RocketIcon").GetComponentInChildren<Text>().text = "x " + numbOfLevelShots;
 
         player.SetActive(true);
+        mTimer = 60;
+        timerText.text = mTimer.ToString();
 
 
         levelCompleteScreen.SetActive(false);
@@ -119,10 +140,25 @@ public class GameManager : MonoBehaviour
 
         FindObjectOfType<SpawnManager>().CheckScene(sceneIndex);
 
-        mTimer = 60;
+        
         InvokeRepeating("TimerCountdown", 0.5f, 1f);
 
         numberOfEnemies = FindObjectOfType<SpawnManager>().numberOfEnemies;
+
+        //Check Rewards
+        if (rewardBullet == true)
+        {
+            numbOfLevelShots++;
+            FindObjectOfType<Player>().setNumberOfShots(numbOfLevelShots);
+            GameObject.Find("RocketIcon").GetComponentInChildren<Text>().text = "x " + numbOfLevelShots;
+        }
+        
+        if (rewardTime == true)
+        {
+            mTimer = mTimer+10;
+            timerText.color = new Color(52.0f / 255.0f, 152.0f / 255.0f, 219.0f / 255.0f, 255.0f / 255.0f);
+        }
+
     }
 
 
@@ -137,8 +173,6 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         checkHightScore();
-
-        audioSource.Play();
 
         bulletsDestroyed = 0;
         enemiesDead = 0;
@@ -185,11 +219,21 @@ public class GameManager : MonoBehaviour
         if (mTimer > 0)
         {
             mTimer--;
+
+            if (mTimer < 60)
+            {
+                timerText.color = new Color(255.0f, 255.0f, 255.0f, 255.0f);
+            }
+
+            if (mTimer <= 10 && !isTimeoutFXPlayed)
+            {
+                FindObjectOfType<AudioManager>().Play("Timeout");
+                isTimeoutFXPlayed = true;
+            }
         }
         else
         {
             FindObjectOfType<Player>().timeoutAnim();
-            audioSource.Play();
         }
 
         timerText.text = mTimer.ToString();
@@ -233,7 +277,19 @@ public class GameManager : MonoBehaviour
         return currentLevel;
     }
 
+    public void setRewardTime()
+    {
+        rewardTime = true;
+    }
 
+    public void setRewardBullet()
+    {
+        rewardBullet = true;
+
+        int extrabullet = FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex) + 1;
+        BulletNumberScreen.text = "x" + extrabullet.ToString();
+        BulletNumberScreen.color = new Color(52.0f / 255.0f, 152.0f / 255.0f, 219.0f / 255.0f, 255.0f / 255.0f);
+    }
 
 
 }

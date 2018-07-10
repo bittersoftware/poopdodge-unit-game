@@ -144,10 +144,10 @@ public class EnemyBehavior1 : MonoBehaviour {
         poopTimes = _poopTimes;
         poopArray = new float [poopTimes];
 
-        //filling array
+        //filling array (inside screen limit x axis)
         for (int i = 0; i < poopTimes; i++)
         {
-            poopArray[i] = Random.Range(-3.5f, 3.5f);
+            poopArray[i] = Random.Range(-3.0f, 3.0f);
         }
 
         //bubble sort
