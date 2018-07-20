@@ -73,13 +73,14 @@ public class AdManager : MonoBehaviour
     public event EventHandler<EventArgs> OnAdCompleted;
 
 
-    //public void HandleOnAdLoaded(object sender, EventArgs args)
-    //{
-    //}
+    public void Handleonadloaded(object sender, EventArgs args)
+    {
+
+    }
     public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
     {
         //Try to Re-load
-        rewardBasedVideo.LoadAd(new AdRequest.Builder().Build(), adUnitID);
+        LoadRewardBasedAd();
     }
     public void HandleOnAdOpening(object sender, EventArgs args)
     {
@@ -90,7 +91,7 @@ public class AdManager : MonoBehaviour
     public void HandleOnAdClosed(object sender, EventArgs args)
     {
         //The OnAdClosed event is a handy place to load a new rewarded video ad after displaying the previous one
-        rewardBasedVideo.LoadAd(new AdRequest.Builder().Build(), adUnitID);
+        LoadRewardBasedAd(); 
     }
     public void HandleOnAdRewarded(object sender, Reward args)
     {

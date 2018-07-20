@@ -22,7 +22,8 @@ public class PauseMenuHolder : MonoBehaviour {
 
     public void PauseGame()
     {
-        Invoke("RefreshScreen", 0.5f);
+        //Invoke("RefreshScreen", 0.5f);
+        RefreshScreen();
         pausePanel.SetActive(true);
         //Disable scripts that still work while timescale is set to 0
     }
@@ -58,8 +59,8 @@ public class PauseMenuHolder : MonoBehaviour {
         Debug.Log("PrintOnEnable: MENU was enabled!!");
         HighestLevel.text = "Level " + FindObjectOfType<GameManager>().GetHighestLevel();
         HighestAcc.text = "Accuracy: " + FindObjectOfType<GameManager>().GetHighestAcc().ToString("F2") + "%";
-        CurrentLevel.text = "Level " + FindObjectOfType<GameManager>().GetCurrentLevel();
-        CurrentAcc.text = "Accuracy: " + FindObjectOfType<GameManager>().GetCurrentAcc().ToString("F2") + "%";
+        //CurrentLevel.text = "Level " + FindObjectOfType<GameManager>().GetCurrentLevel();
+        //CurrentAcc.text = "Accuracy: " + FindObjectOfType<GameManager>().GetCurrentAcc().ToString("F2") + "%";
         Time.timeScale = 0;
     }
 }

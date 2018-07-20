@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
-
+    public Animator transitionAnim;
     public GameObject levelCompleteScreen;
     public GameObject gameOverScreen;
     public GameObject player;
+    public GameObject transitionImage;
     public Text timerText;
     public Text LevelNumberScreen;
     public Text EnemiesNumberScreen;
@@ -38,6 +40,9 @@ public class GameManager : MonoBehaviour
 
     // Use this for initialization
     void Start () {
+        //Transition Anim
+        StartCoroutine(ZoomDownAnim());
+
         //For HighScore 
         currentLevel = sceneIndex + 1;
         currentAcc = 0f;
@@ -48,7 +53,7 @@ public class GameManager : MonoBehaviour
         rewardTime = false;
         rewardBullet = false;
 
-    FindObjectOfType<AudioManager>().Play("Theme");
+        FindObjectOfType<AudioManager>().Play("Theme");
 
 
         FindObjectOfType<SpawnManager>().spawnedEnemies = 0;
@@ -83,10 +88,13 @@ public class GameManager : MonoBehaviour
         enemiesDead++;
         //forHighScore
         totalEnemiesKilled++;
-        checkHightScore();
+        
 
         if (enemiesDead == FindObjectOfType<SpawnManager>().numberOfEnemies)
         {
+            //Check highscore when level is completed
+            checkHightScore();        
+
             //AudioFX - Timeout Management
             FindObjectOfType<AudioManager>().Stop("Timeout");
             isTimeoutFXPlayed = false;
@@ -95,6 +103,9 @@ public class GameManager : MonoBehaviour
             //For rewards
             rewardTime = false;
             rewardBullet = false;
+
+            //Transition Anim
+            StartCoroutine(ZoomUpAnim());
 
             //Level Complete Screen
             sceneIndex++;
@@ -106,16 +117,9 @@ public class GameManager : MonoBehaviour
             BulletNumberScreen.text = "x" + FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex).ToString();
             BulletNumberScreen.color = new Color(0f / 255.0f, 0f / 255.0f, 0f / 255.0f, 255.0f / 255.0f);
 
-            levelCompleteScreen.SetActive(true);
-
-            //Re-enalbe reward buttons
-            FindObjectOfType<NextLevel>().EnableRewardButtons();
-
-            DestroyAllObjects();
-            player.SetActive(false);
-
-            CancelInvoke("TimerCountdown"); 
-
+            //Transition Anim
+            StartCoroutine(ZoomDownAnim());
+            
         }
     }
 
@@ -172,6 +176,10 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        //AudioFX - Timeout Management
+        FindObjectOfType<AudioManager>().Stop("Timeout");
+        isTimeoutFXPlayed = false;
+
         checkHightScore();
 
         bulletsDestroyed = 0;
@@ -291,5 +299,32 @@ public class GameManager : MonoBehaviour
         BulletNumberScreen.color = new Color(52.0f / 255.0f, 152.0f / 255.0f, 219.0f / 255.0f, 255.0f / 255.0f);
     }
 
+    private IEnumerator ZoomUpAnim()
+    {
+        //transition Anim
+        transitionAnim.SetTrigger("zoomup");
+
+        //yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(0.7f);
+
+        //Finished loading complete level screen
+        levelCompleteScreen.SetActive(true);
+        //Re-enalbe reward buttons
+        FindObjectOfType<NextLevel>().EnableRewardButtons();
+
+        DestroyAllObjects();
+        player.SetActive(false);
+
+        CancelInvoke("TimerCountdown");
+    }
+
+    private IEnumerator ZoomDownAnim()
+    {
+        //transition Anim
+        transitionAnim.SetTrigger("zoomdown");
+
+        //yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.5f);
+    }
 
 }

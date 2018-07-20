@@ -39,7 +39,7 @@ public class BulletEmissor : MonoBehaviour {
         {
             return;
         }
-        angle++;
+        angle = angle + 2;
     }
 
     public void IncreaseAngle()
@@ -48,7 +48,7 @@ public class BulletEmissor : MonoBehaviour {
         {
             return;
         }
-        angle--;
+        angle = angle - 2;
     }
 
     public float getAngle()
