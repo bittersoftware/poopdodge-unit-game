@@ -5,9 +5,20 @@ using UnityEngine.UI;
 public class NextLevel : MonoBehaviour
 {
     [SerializeField]
+    private GameObject newRecord;
+    [SerializeField]
     private Button timeButton;
     [SerializeField]
     private Button bulletButton;
+
+    public void OnEnable()
+    {
+        Debug.Log("Next Level Screen OnEnable is OK");
+        if (FindObjectOfType<GameManager>().isNewRecord)
+        {
+            newRecord.SetActive(true);
+        }
+    }
 
     public void LoadNext()
     {
@@ -16,21 +27,38 @@ public class NextLevel : MonoBehaviour
 
     public void rewardTime()
     {
-        FindObjectOfType<AdManager>().rewardType = "time";
-        FindObjectOfType<AdManager>().ShowRewardBasedAd();
-        timeButton.interactable = false;
+
+#if UNITY_EDITOR
+        FindObjectOfType<GameManager>().setRewardTime();
+#elif UNITY_ANDROID
+        if (FindObjectOfType<AdManager>().IsAdLoaded())
+        {
+            FindObjectOfType<AdManager>().rewardType = "time";
+            FindObjectOfType<AdManager>().ShowRewardBasedAd();
+            timeButton.interactable = false;
+        }
+#endif
     }
 
     public void rewardBullet()
     {
-        FindObjectOfType<AdManager>().rewardType = "bullet";
-        FindObjectOfType<AdManager>().ShowRewardBasedAd();
-        bulletButton.interactable = false;
+#if UNITY_EDITOR
+        FindObjectOfType<GameManager>().setRewardBullet();
+#elif UNITY_ANDROID
+        if (FindObjectOfType<AdManager>().IsAdLoaded())
+        {
+            FindObjectOfType<AdManager>().rewardType = "bullet";
+            FindObjectOfType<AdManager>().ShowRewardBasedAd();
+            bulletButton.interactable = false;
+        }
+#endif
     }
+
 
     public void EnableRewardButtons()
     {
         timeButton.interactable = true;
         bulletButton.interactable = true;
     }
+
 }

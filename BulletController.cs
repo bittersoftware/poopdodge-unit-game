@@ -8,12 +8,15 @@ public class BulletController : MonoBehaviour {
     private float screenLimitLeft  = -3.2f;
     private float screenLimitRight = +3.2f;
     private float screenLimitTop   = +5.2f;
+
+    public float windSpeed;
+
     [SerializeField]
     private GameObject _enemyExplosionPrefab;
 
     // Use this for initialization
     void Start () {
-
+        windSpeed = FindObjectOfType<GameManager>().wind;
     }
 	
 	// Update is called once per frame
@@ -23,12 +26,12 @@ public class BulletController : MonoBehaviour {
         {
 
             FindObjectOfType<GameManager>().bulletsDestroyed++;
-            Debug.Log("BulletControler - HEY BULLET DESTROYED!!" );
             Destroy(this.gameObject);
                        
         }
 
         transform.Translate(Vector2.up * 1.0f * Time.deltaTime);
+        transform.Translate(Vector2.right * windSpeed * Time.deltaTime);
 
     }
 

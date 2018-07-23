@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour {
 
     public Animator transitionAnim;
     public GameObject transitionPanel;
+    public GameObject highScore;
 
     public void StartGame()
     {
@@ -14,6 +15,17 @@ public class MainMenu : MonoBehaviour {
         transitionAnim.SetTrigger("anim");
 
         Invoke("LoadGame", 0.5f);
+    }
+
+    public void HighScore()
+    {
+        highScore.SetActive(true);
+    }
+
+    public void HighScoreBack()
+    {
+        highScore.SetActive(false);
+        Time.timeScale = 1.0f;
     }
 
     public void QuitGame()

@@ -118,5 +118,10 @@ public class AdManager : MonoBehaviour
     {
     }
 
+    public bool IsAdLoaded()
+    {
+        return rewardBasedVideo.IsLoaded();
+    }
+
     
 }

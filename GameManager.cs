@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public Text BulletNumberScreen;
     public int enemiesDead = 0;
     public int bulletsDestroyed = 0;
+    public float wind;
+    public bool isNewRecord = false;
 
 
 
@@ -33,10 +35,18 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int mTimer = 60;
     private int numberOfEnemies;
+    [SerializeField]
     private int numbOfLevelShots;
+
+
     private bool isTimeoutFXPlayed;
     private bool rewardTime;
     private bool rewardBullet;
+    private int totalTime;
+    private int startTime;
+
+    //#3498db blue HEX
+    //(52, 152, 219) blue rgb
 
     // Use this for initialization
     void Start () {
@@ -47,6 +57,8 @@ public class GameManager : MonoBehaviour
         currentLevel = sceneIndex + 1;
         currentAcc = 0f;
         totalShots = 0;
+        totalTime = 0;
+        startTime = mTimer;
         isTimeoutFXPlayed = false;
 
         //For rewards
@@ -71,7 +83,7 @@ public class GameManager : MonoBehaviour
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        if (bulletsDestroyed == FindObjectOfType<SpawnManager>().GetNumberOfShots() && enemiesDead < numberOfEnemies)
+        if (bulletsDestroyed == numbOfLevelShots && enemiesDead < numberOfEnemies)
         {
             //Debug.Log("bullet Destroyed: " + bulletsDestroyed + "number of shots: " + FindObjectOfType<SpawnManager>().numberOfShots + "Enemies Dead: " + enemiesDead + "number of Enemies: " + numberOfEnemies);
             GameOver();
@@ -80,6 +92,7 @@ public class GameManager : MonoBehaviour
         if (totalShots > 0)
         {
             currentAcc = ((float)totalEnemiesKilled / (float)totalShots) * 100;
+            //Debug.Log("RealTime CurrentAcc: " + currentAcc);
         }
     }
 
@@ -93,11 +106,21 @@ public class GameManager : MonoBehaviour
         if (enemiesDead == FindObjectOfType<SpawnManager>().numberOfEnemies)
         {
             //Check highscore when level is completed
-            checkHightScore();        
+            //Debug.Log("HighLevel: " + GetHighestLevel());
+            //Debug.Log("HighAcc: " + GetHighestAcc());
+            //Debug.Log("CurhLevel: " + GetCurrentLevel());
+            //Debug.Log("CurLAcc: " + GetCurrentAcc());
+            //Debug.Log("CurLAccVar: " + currentAcc);
+            //checkHighScore();
+
+            //totalTime for HighScore Log
+            totalTime = totalTime + startTime - mTimer;
+
+            Debug.Log ("totalTime: " + totalTime + "StartTime: " + startTime + "mTimer: " + mTimer);
 
             //AudioFX - Timeout Management
             FindObjectOfType<AudioManager>().Stop("Timeout");
-            isTimeoutFXPlayed = false;
+            
 
             //reset Reward
             //For rewards
@@ -109,8 +132,6 @@ public class GameManager : MonoBehaviour
 
             //Level Complete Screen
             sceneIndex++;
-            currentLevel++;
-
 
             LevelNumberScreen.text = sceneIndex.ToString();
             EnemiesNumberScreen.text = "x" + FindObjectOfType<SpawnManager>().getLevelEnemies(sceneIndex).ToString();
@@ -126,6 +147,7 @@ public class GameManager : MonoBehaviour
     public void NextLevel()
     {
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        isNewRecord = false;
         enemiesDead = 0;
         bulletsDestroyed = 0;
         player.transform.position = new Vector2 (-0.2f, -4f);
@@ -133,36 +155,57 @@ public class GameManager : MonoBehaviour
         numbOfLevelShots = FindObjectOfType<SpawnManager>().getLevelShots(sceneIndex);
         GameObject.Find("RocketIcon").GetComponentInChildren<Text>().text = "x " + numbOfLevelShots;
 
+        //Setup Wind
+        wind = FindObjectOfType<SpawnManager>().GetLevelWind(sceneIndex);
+
+        Debug.Log("WindRaw: " + wind);
+        Debug.Log("WindInt: " + (int) wind*10);
+
+        if ((int)wind*10 > 0)
+        {
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (int)wind * 100;
+            GameObject.Find("WindLeft").SetActive(false);
+        }
+        else if ((int)wind * 100 < 0)
+        {
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (int)wind * 100;
+            GameObject.Find("WindRight").SetActive(false);
+        }
+
         player.SetActive(true);
+        FindObjectOfType<Player>().setNumberOfShots(numbOfLevelShots);
+        isTimeoutFXPlayed = false;
         mTimer = 60;
         timerText.text = mTimer.ToString();
-
-
-        levelCompleteScreen.SetActive(false);
-        FindObjectOfType<SpawnManager>().spawnedEnemies = 0;
-        FindObjectOfType<SpawnManager>().isSpawned = false;
-
-        FindObjectOfType<SpawnManager>().CheckScene(sceneIndex);
-
-        
-        InvokeRepeating("TimerCountdown", 0.5f, 1f);
-
-        numberOfEnemies = FindObjectOfType<SpawnManager>().numberOfEnemies;
 
         //Check Rewards
         if (rewardBullet == true)
         {
+            Debug.Log("Before Reward Player:" + FindObjectOfType<Player>().getNumberOfShots()); 
             numbOfLevelShots++;
             FindObjectOfType<Player>().setNumberOfShots(numbOfLevelShots);
             GameObject.Find("RocketIcon").GetComponentInChildren<Text>().text = "x " + numbOfLevelShots;
+            Debug.Log("After Reward Player:" + FindObjectOfType<Player>().getNumberOfShots());
         }
-        
+
         if (rewardTime == true)
         {
-            mTimer = mTimer+10;
+            mTimer = mTimer + 10;
+            timerText.text = mTimer.ToString();
             timerText.color = new Color(52.0f / 255.0f, 152.0f / 255.0f, 219.0f / 255.0f, 255.0f / 255.0f);
         }
 
+        startTime = mTimer;
+
+        //Start Level Preset
+        FindObjectOfType<SpawnManager>().spawnedEnemies = 0;
+        FindObjectOfType<SpawnManager>().isSpawned = false;
+        FindObjectOfType<SpawnManager>().CheckScene(sceneIndex);
+        numberOfEnemies = FindObjectOfType<SpawnManager>().numberOfEnemies;
+
+        levelCompleteScreen.SetActive(false);
+        InvokeRepeating("TimerCountdown", 1f, 1f);
+        
     }
 
 
@@ -178,9 +221,6 @@ public class GameManager : MonoBehaviour
     {
         //AudioFX - Timeout Management
         FindObjectOfType<AudioManager>().Stop("Timeout");
-        isTimeoutFXPlayed = false;
-
-        checkHightScore();
 
         bulletsDestroyed = 0;
         enemiesDead = 0;
@@ -252,16 +292,35 @@ public class GameManager : MonoBehaviour
         totalShots++;
     }
 
-    private void checkHightScore()
+    private void checkHighScore()
     {
         if (currentLevel == PlayerPrefs.GetInt("HighScore", 0) && currentAcc > GetHighestAcc())
         {
+            PlayerPrefs.SetString("Date", System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+
+            PlayerPrefs.SetInt("HighScore", currentLevel);
             PlayerPrefs.SetFloat("HighAcc", currentAcc);
+
+            PlayerPrefs.SetInt("EnemiesKilled", totalEnemiesKilled);
+            PlayerPrefs.SetInt("BullestsUsed", totalShots);
+            PlayerPrefs.SetInt("TotalTime", totalTime);
+                        
+            isNewRecord = true;
+
         }
         else if (currentLevel > PlayerPrefs.GetInt("HighScore", 0))
         {
+            PlayerPrefs.SetString("Date", System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+
             PlayerPrefs.SetInt("HighScore", currentLevel);
             PlayerPrefs.SetFloat("HighAcc", currentAcc);
+
+            PlayerPrefs.SetInt("EnemiesKilled", totalEnemiesKilled);
+            PlayerPrefs.SetInt("BullestsUsed", totalShots);
+            PlayerPrefs.SetInt("TotalTime", totalTime);
+
+            isNewRecord = true;
+
         }
     }
 
@@ -304,9 +363,13 @@ public class GameManager : MonoBehaviour
         //transition Anim
         transitionAnim.SetTrigger("zoomup");
 
+
         //yield return new WaitForSeconds(5f);
         yield return new WaitForSeconds(0.7f);
-
+        //CheckHighscore
+        checkHighScore();
+        //increment Current Level for High Score only after reading it
+        currentLevel++;
         //Finished loading complete level screen
         levelCompleteScreen.SetActive(true);
         //Re-enalbe reward buttons

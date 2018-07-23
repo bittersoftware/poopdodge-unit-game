@@ -9,18 +9,20 @@ public class SpawnManager : MonoBehaviour {
     public bool isSpawned = false;
     public int numberOfShots = 7;
     public int spawnedEnemies = 0;
+    public float wind = 0;
+
     //Enemy Speed
-    float[,] levelSpeedInput = new float[10, 1] 
-    { {0.5f},
-      {0.5f},
-      {0.5f},
-      {1.0f},
-      {1.0f},
-      {1.2f},
-      {1.5f},
-      {1.7f},
-      {2.0f},
-      {2.5f},};
+    float[,] levelSpeedInput = new float[10, 2] 
+    { {0.5f, 0f},
+      {0.5f, 0f},
+      {0.5f, 0f},
+      {1.0f, 0f},
+      {1.0f, 0f},
+      {1.2f, 0f},
+      {1.5f, 0f},
+      {1.7f, 0f},
+      {2.0f, 0f},
+      {2.5f, 0f},};
     //poopTimes, numOfEnemies, numOfShots
     int[,] levelGeneralInput = new int[10, 3]
     { {1, 1, 7},
@@ -66,67 +68,76 @@ public class SpawnManager : MonoBehaviour {
 
 
     public void CheckScene (int y) {
-           
-        if (y == 0)
-        //Speed, poopTimes, numOfEnemies, numOfShots
-        {
-            //SetLevel(0.5f, 1, 1, 7);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 1)
-        {
-            //SetLevel(0.5f, 1, 2, 7);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 2)
-        {
-            //SetLevel(0.5f, 2, 2, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 3)
-        {
-            //SetLevel(1f, 2, 2, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 4)
-        {
-            //SetLevel(1f, 2, 3, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 5)
-        {
-            //SetLevel(1.2f, 2, 3, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 6)
-        {
-            //SetLevel(1.5f, 2, 3, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 7)
-        {
-            //SetLevel(1.7f, 3, 3, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 8)
-        {
-            //SetLevel(2f, 3, 4, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else if (y == 9)
-        {
-            //SetLevel(2.5f, 3, 5, 8);
-            SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y));
-        }
-        else
+
+        if (y > 50)
         {
             FindObjectOfType<GameManager>().EndGame();
         }
 
+        SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y));
+
+        //if (y == 0)
+        ////Speed, poopTimes, numOfEnemies, numOfShots
+        //{
+        //    //SetLevel(0.5f, 1, 1, 7);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y));
+        //}
+        //else if (y == 1)
+        //{
+        //    //SetLevel(0.5f, 1, 2, 7);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y));
+        //}
+        //else if (y == 2)
+        //{
+        //    //SetLevel(0.5f, 2, 2, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 3)
+        //{
+        //    //SetLevel(1f, 2, 2, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 4)
+        //{
+        //    //SetLevel(1f, 2, 3, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 5)
+        //{
+        //    //SetLevel(1.2f, 2, 3, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 6)
+        //{
+        //    //SetLevel(1.5f, 2, 3, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 7)
+        //{
+        //    //SetLevel(1.7f, 3, 3, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 8)
+        //{
+        //    //SetLevel(2f, 3, 4, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else if (y == 9)
+        //{
+        //    //SetLevel(2.5f, 3, 5, 8);
+        //    SetLevel(getLevelSpeed(y), getLevelPoopTimes(y), getLevelEnemies(y), getLevelShots(y), GetLevelWind(y);
+        //}
+        //else
+        //{
+        //    FindObjectOfType<GameManager>().EndGame();
+        //}
+
+        
+
     }
 
 
-    private void SetLevel (float _enemySpeed, int _poopTimes, int _numberOfEnemies, int _numberOfShots)
+    private void SetLevel (float _enemySpeed, int _poopTimes, int _numberOfEnemies, int _numberOfShots, float _wind)
     {
         float maxSpawnInterval = 3.0f;
         spawnedEnemies = 0;
@@ -135,10 +146,11 @@ public class SpawnManager : MonoBehaviour {
         poopTimes = _poopTimes;
         numberOfEnemies = _numberOfEnemies;
         numberOfShots = _numberOfShots;     
-        
-        FindObjectOfType<Player>().setNumberOfShots(numberOfShots);
+        //Game manager takes care of playerbullets
+        //FindObjectOfType<Player>().setNumberOfShots(numberOfShots);
         spawnInterval = Random.Range(1f, maxSpawnInterval);
         InvokeRepeating("SpawnEnemy", 1f, maxSpawnInterval);
+        wind = _wind;
 
     }
 
@@ -154,8 +166,8 @@ public class SpawnManager : MonoBehaviour {
         enemy.GetComponent<EnemyBehavior1>().SetSpeed(enemySpeed);
 
         spawnedEnemies++;
-        Debug.Log("spawned Enemies: " + spawnedEnemies);
-        Debug.Log("isSpawned: " + isSpawned);
+        //Debug.Log("spawned Enemies: " + spawnedEnemies);
+        //Debug.Log("isSpawned: " + isSpawned);
 
 
     }
@@ -205,6 +217,12 @@ public class SpawnManager : MonoBehaviour {
     {
         numberOfShots = levelGeneralInput[level, 2];
         return levelGeneralInput[level, 2];
+    }
+
+    public float GetLevelWind(int level)
+    {
+        float wind = Random.Range(-levelSpeedInput[level, 1], levelSpeedInput[level, 1]);
+        return wind;
     }
 
 }

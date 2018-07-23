@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PauseMenuHolder : MonoBehaviour {
 
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject highScore;
     public AudioMixer audioMixer;
     public Text HighestLevel;
     public Text HighestAcc;
@@ -43,6 +44,16 @@ public class PauseMenuHolder : MonoBehaviour {
     {
         //audioMixer.SetFloat("volume", volume);
         AudioListener.volume = volume;
+    }
+
+    public void HighScore()
+    {
+        highScore.SetActive(true); 
+    }
+
+    public void HighScoreBack()
+    {
+        highScore.SetActive(false);
     }
 
     public void Reset()

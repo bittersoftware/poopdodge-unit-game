@@ -42,6 +42,7 @@ public class AudioManager : MonoBehaviour {
         }
         s.source.pitch = 1;
         s.source.Play();
+        Debug.LogWarning("Play Sound: " + name);
     }
 
     public void Stop(string name)
@@ -54,5 +55,6 @@ public class AudioManager : MonoBehaviour {
         }
         s.source.pitch = 1;
         s.source.Stop();
+        Debug.LogWarning("Stop Sound: " + name);
     }
 }
