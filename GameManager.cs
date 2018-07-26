@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public Text LevelNumberScreen;
     public Text EnemiesNumberScreen;
     public Text BulletNumberScreen;
+    public GameObject windLeft;
+    public GameObject windRight;
     public int enemiesDead = 0;
     public int bulletsDestroyed = 0;
     public float wind;
@@ -31,7 +33,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int totalEnemiesKilled;
     private int sceneIndex = 0;
-    private static bool created = false;
     [SerializeField]
     private int mTimer = 60;
     private int numberOfEnemies;
@@ -116,7 +117,7 @@ public class GameManager : MonoBehaviour
             //totalTime for HighScore Log
             totalTime = totalTime + startTime - mTimer;
 
-            Debug.Log ("totalTime: " + totalTime + "StartTime: " + startTime + "mTimer: " + mTimer);
+            //Debug.Log ("totalTime: " + totalTime + "StartTime: " + startTime + "mTimer: " + mTimer);
 
             //AudioFX - Timeout Management
             FindObjectOfType<AudioManager>().Stop("Timeout");
@@ -158,18 +159,18 @@ public class GameManager : MonoBehaviour
         //Setup Wind
         wind = FindObjectOfType<SpawnManager>().GetLevelWind(sceneIndex);
 
-        Debug.Log("WindRaw: " + wind);
-        Debug.Log("WindInt: " + (int) wind*10);
+        //Debug.Log("WindRaw: " + wind);
+        //Debug.Log("WindInt: " + (int) wind*10);
 
-        if ((int)wind*10 > 0)
+        if ((Mathf.RoundToInt(wind * 20)) > 0)
         {
-            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (int)wind * 100;
-            GameObject.Find("WindLeft").SetActive(false);
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (Mathf.Abs(Mathf.RoundToInt(wind * 20)));
+            windRight.SetActive(true);
         }
-        else if ((int)wind * 100 < 0)
+        else if ((Mathf.RoundToInt(wind * 20)) < 0)
         {
-            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (int)wind * 100;
-            GameObject.Find("WindRight").SetActive(false);
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + Mathf.Abs((Mathf.RoundToInt(wind * 20)));
+            windLeft.SetActive(true);
         }
 
         player.SetActive(true);
@@ -181,11 +182,11 @@ public class GameManager : MonoBehaviour
         //Check Rewards
         if (rewardBullet == true)
         {
-            Debug.Log("Before Reward Player:" + FindObjectOfType<Player>().getNumberOfShots()); 
+            //Debug.Log("Before Reward Player:" + FindObjectOfType<Player>().getNumberOfShots()); 
             numbOfLevelShots++;
             FindObjectOfType<Player>().setNumberOfShots(numbOfLevelShots);
             GameObject.Find("RocketIcon").GetComponentInChildren<Text>().text = "x " + numbOfLevelShots;
-            Debug.Log("After Reward Player:" + FindObjectOfType<Player>().getNumberOfShots());
+            //Debug.Log("After Reward Player:" + FindObjectOfType<Player>().getNumberOfShots());
         }
 
         if (rewardTime == true)
@@ -232,7 +233,7 @@ public class GameManager : MonoBehaviour
 
         player.SetActive(false);
         gameOverScreen.SetActive(true);
-        Debug.Log("Game Over");
+        //Debug.Log("Game Over");
         //birds flying bg
     }
 
@@ -374,6 +375,9 @@ public class GameManager : MonoBehaviour
         levelCompleteScreen.SetActive(true);
         //Re-enalbe reward buttons
         FindObjectOfType<NextLevel>().EnableRewardButtons();
+
+        windRight.SetActive(false);
+        windLeft.SetActive(false);
 
         DestroyAllObjects();
         player.SetActive(false);

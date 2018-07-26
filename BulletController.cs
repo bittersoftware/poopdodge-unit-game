@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour {
 
+    public float bulletSpeed;
 
     private float screenLimitLeft  = -3.2f;
     private float screenLimitRight = +3.2f;
     private float screenLimitTop   = +5.2f;
+
+    private Rigidbody2D rb2D;
+    private Vector2 velocity;
 
     public float windSpeed;
 
@@ -16,11 +20,16 @@ public class BulletController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        rb2D = gameObject.GetComponent<Rigidbody2D>();
+
         windSpeed = FindObjectOfType<GameManager>().wind;
+        rb2D.AddForce(transform.up * bulletSpeed, ForceMode2D.Impulse);
+
+
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
         if(transform.position.x < screenLimitLeft || transform.position.x > screenLimitRight || transform.position.y > screenLimitTop)
         {
@@ -30,9 +39,13 @@ public class BulletController : MonoBehaviour {
                        
         }
 
-        transform.Translate(Vector2.up * 1.0f * Time.deltaTime);
-        transform.Translate(Vector2.right * windSpeed * Time.deltaTime);
+        if ((Mathf.Abs(Mathf.RoundToInt(windSpeed * 20))) > 0)
+        {
+            rb2D.AddForce(transform.right * windSpeed);
+            transform.Rotate(Vector3.forward, -windSpeed);
+        }
 
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

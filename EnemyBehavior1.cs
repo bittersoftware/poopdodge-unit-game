@@ -26,17 +26,30 @@ public class EnemyBehavior1 : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        vector2Direction = Vector2.left;
-        //randomPoop = Random.Range(-2.5f, 2.5f);
+
 
         isPooped = false;
-        isGoingRight = false;
-        poopTimes = 1;
         auxUp = 0;
         auxDown = poopTimes;
         PoopTimeBubbleSort(poopTimes);
 
-	}
+        //check side of screen in respawn
+        if (transform.position.x < 1)
+        {
+            Vector2 theScale = transform.localScale;
+            theScale.x *= -1;
+            transform.localScale = theScale;
+
+            vector2Direction = Vector2.right;
+            isGoingRight = true;
+        }
+        else if (transform.position.x > 1)
+        {
+            vector2Direction = Vector2.left;
+            isGoingRight = false;
+        }
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -98,7 +111,9 @@ public class EnemyBehavior1 : MonoBehaviour {
         //update ispooped bool to false
         if (transform.position.x < screenLimitLeft && isGoingRight == false)
         {
-                       
+            //new poop spots
+            PoopTimeBubbleSort(poopTimes);
+
             Vector2 theScale = transform.localScale;
             theScale.x *= -1;
             transform.localScale = theScale;
@@ -107,9 +122,16 @@ public class EnemyBehavior1 : MonoBehaviour {
             isGoingRight = true;
             isPooped = false;
 
+            Debug.Log("poopx: " + poopTimes);
+
         }
         else if (transform.position.x > screenLimitRight && isGoingRight == true)
         {
+            //new poop spots
+            PoopTimeBubbleSort(poopTimes);
+
+            Debug.Log("poopx: " + poopTimes);
+
             Vector2 theScale = transform.localScale;
             theScale.x *= -1;
             transform.localScale = theScale;

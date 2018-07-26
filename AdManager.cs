@@ -10,10 +10,20 @@ public class AdManager : MonoBehaviour
     public static AdManager Instance { set; get; }
     public string rewardType;
     private RewardBasedVideoAd rewardBasedVideo;
-    private string adUnitID = "ca-app-pub-3940256099942544/5224354917";
+    private string adUnitID;
 
     public void Start()
     {
+
+        if (Debug.isDebugBuild)
+        {
+            adUnitID = "ca-app-pub-3940256099942544/5224354917";
+        }
+        else
+        {
+            adUnitID = "ca-app-pub-3940256099942544/5224354917";
+        }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -32,14 +42,6 @@ public class AdManager : MonoBehaviour
 
     private void LoadRewardBasedAd()
     {
-//#if UNITY_EDITOR
-//        string adUnitID = "usused";
-//#elif UNITY_ANDROID
-//        string adUnitID = "ca-app-pub-3940256099942544/5224354917";
-//#else
-//        string adUnitID = "unexpected_platform";
-//#endif
-
         rewardBasedVideo.LoadAd(new AdRequest.Builder().Build(), adUnitID);
     }
 
