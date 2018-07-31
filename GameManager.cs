@@ -161,17 +161,20 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log("WindRaw: " + wind);
         //Debug.Log("WindInt: " + (int) wind*10);
+        //Mathf.Round(wind * 100f) / 100f;
 
-        if ((Mathf.RoundToInt(wind * 20)) > 0)
+        if ((Mathf.Round(wind * 100f) / 10f) >= 1)
         {
-            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (Mathf.Abs(Mathf.RoundToInt(wind * 20)));
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (Mathf.Abs(Mathf.Round(wind * 100f) / 10f));
             windRight.SetActive(true);
         }
-        else if ((Mathf.RoundToInt(wind * 20)) < 0)
+        else if ((Mathf.Round(wind * 100f) / 10f) <= -1)
         {
-            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + Mathf.Abs((Mathf.RoundToInt(wind * 20)));
+            GameObject.Find("WindIcon").GetComponentInChildren<Text>().text = "" + (Mathf.Abs(Mathf.Round(wind * 100f) / 10f));
             windLeft.SetActive(true);
         }
+
+        Debug.Log("managerwind: " + (Mathf.Round(wind * 100f) / 10f));
 
         player.SetActive(true);
         FindObjectOfType<Player>().setNumberOfShots(numbOfLevelShots);

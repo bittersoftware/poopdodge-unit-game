@@ -10,7 +10,7 @@ public class TypeWriterEffect : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        fullText = "Level: " + PlayerPrefs.GetInt("HighScore", 0);
+        fullText = "Version: " + PlayerPrefs.GetInt("HighScore", 0);
         StartCoroutine(ShowText());
 	}
 	

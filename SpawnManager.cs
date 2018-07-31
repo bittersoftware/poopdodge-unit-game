@@ -257,12 +257,11 @@ public class SpawnManager : MonoBehaviour {
 
         //random wind for levels 20 to 50
         //min 20/50 and max 50/50
-        if (i >= 0)
+        if (i >= 10)
         {
             int windDirection = Random.Range(0, 2) * 2 - 1;
-            wind = Random.Range(i/2, i) * windDirection / 100f;
-            wind = Mathf.Round(wind * 10f) / 10f;
-
+            wind = Random.Range(i, i * 1.2f) * windDirection / 100f;
+            wind = Mathf.Round(wind * 100f) / 100f;
             //Debug.Log("windspawn: " + wind + " dir: " + windDirection);
         }
         

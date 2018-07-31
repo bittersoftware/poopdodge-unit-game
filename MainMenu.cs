@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
     public Animator transitionAnim;
     public GameObject transitionPanel;
     public GameObject highScore;
+    public GameObject aboutPanel;
+    public Text versionTxt;
+
+    private void Start()
+    {
+        versionTxt.text = "Version : " + Application.version;
+    }
 
     public void StartGame()
     {
@@ -24,8 +32,18 @@ public class MainMenu : MonoBehaviour {
 
     public void HighScoreBack()
     {
+        Time.timeScale = 1f;
         highScore.SetActive(false);
-        Time.timeScale = 1.0f;
+    }
+
+    public void About()
+    {
+        aboutPanel.SetActive(true);
+    }
+
+    public void AbouteBack()
+    {
+        aboutPanel.SetActive(false);
     }
 
     public void QuitGame()

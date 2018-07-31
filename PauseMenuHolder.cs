@@ -67,8 +67,8 @@ public class PauseMenuHolder : MonoBehaviour {
 
     public void RefreshScreen()
     {
-        Debug.Log("PrintOnEnable: MENU was enabled!!");
-        HighestLevel.text = "Level " + FindObjectOfType<GameManager>().GetHighestLevel();
+        //Debug.Log("PrintOnEnable: MENU was enabled!!");
+        HighestLevel.text = "Version " + FindObjectOfType<GameManager>().GetHighestLevel();
         HighestAcc.text = "Accuracy: " + FindObjectOfType<GameManager>().GetHighestAcc().ToString("F2") + "%";
         //CurrentLevel.text = "Level " + FindObjectOfType<GameManager>().GetCurrentLevel();
         //CurrentAcc.text = "Accuracy: " + FindObjectOfType<GameManager>().GetCurrentAcc().ToString("F2") + "%";

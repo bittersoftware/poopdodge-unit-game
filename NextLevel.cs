@@ -13,7 +13,7 @@ public class NextLevel : MonoBehaviour
 
     public void OnEnable()
     {
-        Debug.Log("Next Level Screen OnEnable is OK");
+        //Debug.Log("Next Version Screen OnEnable is OK");
         if (FindObjectOfType<GameManager>().isNewRecord)
         {
             newRecord.SetActive(true);

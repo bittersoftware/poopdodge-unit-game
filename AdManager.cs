@@ -11,18 +11,20 @@ public class AdManager : MonoBehaviour
     public string rewardType;
     private RewardBasedVideoAd rewardBasedVideo;
     private string adUnitID;
+    string appId = "ca-app-pub-4711925247199151~1271893261";
 
     public void Start()
     {
 
-        if (Debug.isDebugBuild)
-        {
-            adUnitID = "ca-app-pub-3940256099942544/5224354917";
-        }
-        else
-        {
-            adUnitID = "ca-app-pub-3940256099942544/5224354917";
-        }
+        MobileAds.Initialize(appId);
+
+
+        //testAd
+        //adUnitID = "ca-app-pub-3940256099942544/5224354917";
+
+        //realAd
+        adUnitID = "ca-app-pub-4711925247199151/3139825936";
+
 
         Instance = this;
         DontDestroyOnLoad(gameObject);

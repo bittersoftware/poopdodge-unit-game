@@ -12,6 +12,7 @@ public class BulletController : MonoBehaviour {
 
     private Rigidbody2D rb2D;
     private Vector2 velocity;
+    private float launchAngle;
 
     public float windSpeed;
 
@@ -24,6 +25,8 @@ public class BulletController : MonoBehaviour {
 
         windSpeed = FindObjectOfType<GameManager>().wind;
         rb2D.AddForce(transform.up * bulletSpeed, ForceMode2D.Impulse);
+
+        launchAngle = transform.rotation.eulerAngles.z;
 
 
     }
@@ -39,10 +42,16 @@ public class BulletController : MonoBehaviour {
                        
         }
 
-        if ((Mathf.Abs(Mathf.RoundToInt(windSpeed * 20))) > 0)
+        if ((Mathf.Abs(Mathf.Round(windSpeed * 100f) / 10f)) >= 1)
         {
             rb2D.AddForce(transform.right * windSpeed);
-            transform.Rotate(Vector3.forward, -windSpeed);
+            transform.Rotate(Vector3.forward, -windSpeed/2);
+
+            //Debug.Log("windbullet: " + windSpeed);
+
+            if (Mathf.Abs(transform.rotation.eulerAngles.z) - launchAngle < 45)
+            {
+            }
         }
 
         
@@ -50,7 +59,7 @@ public class BulletController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Collided with: " + collision.name);
+        //Debug.Log("Collided with: " + collision.name);
         if (collision.tag == "Ground")
         {
             Destroy(this.gameObject);
