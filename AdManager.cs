@@ -13,6 +13,11 @@ public class AdManager : MonoBehaviour
     private string adUnitID;
     string appId = "ca-app-pub-4711925247199151~1271893261";
 
+    public void Awake()
+    {
+        Screen.orientation = ScreenOrientation.Portrait;
+    }
+
     public void Start()
     {
 
